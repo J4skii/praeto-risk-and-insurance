@@ -1,0 +1,537 @@
+import React, { useState } from 'react';
+import { 
+  COMPANY_DETAILS, 
+  STATS, 
+  PERSONAL_PRODUCTS, 
+  BUSINESS_PRODUCTS, 
+  TESTIMONIALS, 
+  MAIN_CTA 
+} from './constants';
+import { Header } from './components/Header';
+import { AnimatedStat } from './components/AnimatedStat';
+
+import { FadeIn } from './components/FadeIn';
+import { Cursor } from './components/Cursor';
+import { PartnersBanner } from './components/Partners';
+
+// Helper to guess icon based on keywords
+const getIconForProduct = (name: string) => {
+  const n = name.toLowerCase();
+  if (n.includes('vehicle') || n.includes('hull') || n.includes('fleet')) return 'fa-car-side';
+  if (n.includes('home') || n.includes('house') || n.includes('building')) return 'fa-home';
+  if (n.includes('life') || n.includes('funeral') || n.includes('accident')) return 'fa-heartbeat';
+  if (n.includes('medical') || n.includes('health')) return 'fa-stethoscope';
+  if (n.includes('cyber') || n.includes('data') || n.includes('computer')) return 'fa-laptop-code';
+  if (n.includes('liability') || n.includes('legal') || n.includes('director')) return 'fa-gavel';
+  if (n.includes('money') || n.includes('finance') || n.includes('accounts')) return 'fa-coins';
+  if (n.includes('theft') || n.includes('crime') || n.includes('fraud')) return 'fa-user-secret';
+  if (n.includes('travel')) return 'fa-plane';
+  if (n.includes('fire')) return 'fa-fire';
+  if (n.includes('education')) return 'fa-graduation-cap';
+  return 'fa-shield-alt';
+};
+
+function Hero() {
+  return (
+    <section className="relative bg-brand-black text-white overflow-hidden min-h-[75vh] flex items-center">
+      {/* Background Image with Ken Burns Effect */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80" 
+          alt="Skyscrapers" 
+          className="w-full h-full object-cover opacity-30 animate-ken-burns origin-center" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-brand-black/90 to-brand-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center relative z-10 pt-28">
+        <FadeIn direction="up">
+          <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-8 backdrop-blur-md shadow-lg">
+            <span className="w-2 h-2 rounded-full bg-brand-gold animate-pulse shadow-[0_0_8px_#D4AF37]"></span>
+            <span className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">Est. 1998 • FSP {COMPANY_DETAILS.fsp}</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight tracking-tight mb-8 drop-shadow-xl">
+            Safeguarding <br />
+            <span className="text-brand-gold italic">
+              Your Legacy.
+            </span>
+          </h2>
+          
+          <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-xl border-l-2 border-brand-gold/50 pl-6 mb-12 font-light">
+            A Level 1 B-BBEE brokerage managing <strong className="text-white font-medium">R20bn AUM</strong>. We replace generic cover with engineering-grade risk management.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-5">
+            <a href="#quote" className="group relative px-10 py-4 bg-brand-gold text-brand-black font-bold text-sm uppercase tracking-widest rounded overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+              <div className="absolute inset-0 w-full h-full bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
+              <span className="relative">Get Started</span>
+            </a>
+            <a 
+              href={`https://wa.me/${COMPANY_DETAILS.tel.replace(/\s/g,'')}`} 
+              className="flex items-center justify-center px-10 py-4 rounded border border-white/20 text-white text-sm font-bold uppercase tracking-widest hover:bg-white hover:text-brand-black transition-all duration-300 hover:border-white backdrop-blur-sm"
+            >
+              <i className="fab fa-whatsapp mr-3 text-lg"></i>
+              WhatsApp
+            </a>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={200} direction="left" className="hidden md:flex relative justify-center items-center min-h-[400px]">
+           {/* Abstract Glow */}
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-3xl animate-pulse"></div>
+           
+           {/* PRAETO LOGO BLOCK */}
+           <div className="relative z-10 p-12 bg-black/40 backdrop-blur-md rounded-xl shadow-2xl border border-white/5 hover:border-[#B49246]/30 transition-all duration-500 transform hover:scale-[1.02] group">
+              <div className="flex flex-col select-none items-center justify-center">
+
+                {/* LOGO IMAGE CONTAINER */}
+                <div className="w-full max-w-[500px]">
+                  {/*
+                     IMPORTANT: Place your logo in the project `public/` folder
+                     (e.g. `public/praeto-logo.png`) and it will be served at `/praeto-logo.png`.
+                     Replace the file in `public/` when ready — no code change required.
+                  */}
+                  <img
+                    src="/praeto-logo.png"
+                    alt="Praeto Financial Services Logo"
+                    className="w-full h-auto object-contain drop-shadow-md"
+                  />
+                </div>
+                
+              </div>
+           </div>
+        </FadeIn>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
+        <span className="text-[10px] uppercase tracking-widest text-white">Scroll</span>
+        <div className="w-[1px] h-8 bg-gradient-to-b from-white to-transparent"></div>
+      </div>
+    </section>
+  );
+}
+
+function StatsSection() {
+  return (
+    <section className="py-20 bg-brand-gold text-brand-black relative overflow-hidden">
+      {/* Subtle pattern */}
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-5 mix-blend-multiply"></div>
+      
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-8 text-center relative z-10">
+          {STATS.map((s, i) => (
+            <FadeIn key={i} delay={i * 100} className="group cursor-default">
+              <div className="relative inline-block">
+                {/* The Counter line */}
+                <div className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold tracking-tight mb-2 text-brand-black transform transition-transform duration-300 group-hover:scale-110 origin-bottom">
+                  <AnimatedStat value={s.value} prefix={s.prefix} suffix={s.suffix} />
+                </div>
+                {/* The Label line */}
+                <div className="text-xs font-bold uppercase tracking-[0.2em] opacity-80 border-t border-black/20 pt-3 inline-block w-full">
+                  {s.suffix.replace("bn AUM","AUM").replace("ratio","Claims Ratio").replace("avg","Industry Avg").replace("+ clients","Active Clients")}
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SolutionsSection() {
+  const [activeTab, setActiveTab] = useState<'personal' | 'business'>('personal');
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleTabChange = (tab: 'personal' | 'business') => {
+    if (activeTab === tab) return;
+    setIsAnimating(true);
+    setActiveTab(tab);
+    setTimeout(() => setIsAnimating(false), 400); // Match transition duration
+  };
+
+  const items = activeTab === 'personal' ? PERSONAL_PRODUCTS : BUSINESS_PRODUCTS;
+  const colorTheme = activeTab === 'personal' ? 'bg-brand-grey' : 'bg-brand-black';
+  const textColor = activeTab === 'personal' ? 'text-brand-black' : 'text-white';
+  const cardBg = activeTab === 'personal' ? 'bg-white border-gray-200 hover:border-brand-gold' : 'bg-white/5 border-white/10 hover:border-brand-gold';
+
+  return (
+    <section id="solutions" className={`py-32 transition-colors duration-700 ${colorTheme} relative overflow-hidden min-h-[800px]`}>
+       {/* Dynamic Background Blobs */}
+       <div className={`absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none transition-opacity duration-700 ${activeTab === 'business' ? 'opacity-30' : 'opacity-0'}`}>
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-gold/10 rounded-full mix-blend-screen filter blur-[100px] animate-float"></div>
+       </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-16">
+          <FadeIn>
+            <h3 className={`text-4xl md:text-5xl font-serif font-bold mb-12 ${textColor}`}>Tailored Solutions</h3>
+            
+            {/* Toggle Switch */}
+            <div className="inline-flex bg-white/5 backdrop-blur-sm p-2 rounded-full border border-gray-500/20 shadow-lg relative overflow-hidden">
+              {/* Sliding background */}
+              <div 
+                 className={`absolute top-2 bottom-2 rounded-full bg-brand-gold shadow-md transition-all duration-500 cubic-bezier(0.34, 1.56, 0.64, 1)`}
+                 style={{ 
+                   left: activeTab === 'personal' ? '8px' : '50%', 
+                   width: 'calc(50% - 12px)' 
+                 }}
+              ></div>
+              
+              <button 
+                onClick={() => handleTabChange('personal')}
+                className={`relative z-10 px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-colors duration-300 w-48 ${activeTab === 'personal' ? 'text-brand-black' : 'text-gray-500 hover:text-gray-400'}`}
+              >
+                Personal
+              </button>
+              <button 
+                onClick={() => handleTabChange('business')}
+                className={`relative z-10 px-10 py-4 rounded-full text-sm font-bold uppercase tracking-widest transition-colors duration-300 w-48 ${activeTab === 'business' ? 'text-brand-black' : 'text-gray-500 hover:text-gray-400'}`}
+              >
+                Business
+              </button>
+            </div>
+          </FadeIn>
+        </div>
+
+        {/* Grid with animation key */}
+        <div 
+          className={`grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-all duration-500 ease-out ${isAnimating ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'}`}
+        >
+          {items.map((item, i) => (
+            <div key={`${activeTab}-${i}`} className={`group relative p-8 rounded shadow-sm hover:shadow-2xl border transition-all duration-300 hover:-translate-y-2 ${cardBg}`}>
+              <div className="flex flex-col h-full">
+                <div className={`w-14 h-14 mb-6 rounded-full flex items-center justify-center text-2xl transition-colors ${activeTab === 'personal' ? 'bg-gray-50 text-brand-gold group-hover:bg-brand-gold group-hover:text-white' : 'bg-white/10 text-brand-gold group-hover:bg-brand-gold group-hover:text-black'}`}>
+                  <i className={`fas ${getIconForProduct(item)}`}></i>
+                </div>
+                <div>
+                  <h4 className={`font-serif font-bold text-lg leading-tight mb-3 ${activeTab === 'personal' ? 'text-brand-black' : 'text-white'}`}>{item}</h4>
+                  <p className={`text-xs leading-relaxed ${activeTab === 'personal' ? 'text-gray-500' : 'text-gray-400'}`}>
+                    Comprehensive coverage designed for your specific needs.
+                  </p>
+                </div>
+                <div className="mt-auto pt-6 flex items-center text-xs font-bold uppercase tracking-widest text-brand-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
+                   <span>Learn More</span>
+                   <i className="fas fa-arrow-right ml-2"></i>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function QuotingProcess() {
+  return (
+    <section className="py-32 bg-white relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <FadeIn>
+          <div className="text-center mb-20">
+            <span className="text-brand-gold font-bold tracking-[0.2em] text-xs uppercase mb-4 block">How We Work</span>
+            <h3 className="text-4xl font-serif font-bold text-brand-black">The Praeto Process</h3>
+          </div>
+        </FadeIn>
+        
+        <div className="relative">
+          {/* Connecting Line (Desktop) */}
+          <div className="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gray-200 z-0"></div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+            {[
+              { title: "Assessment", desc: "Site visits & engineering surveys", icon: "fa-search-location" },
+              { title: "Analysis", desc: "Quantifying exposure & gaps", icon: "fa-chart-pie" },
+              { title: "Design", desc: "Structuring the optimal programme", icon: "fa-drafting-compass" },
+              { title: "Management", desc: "Continuous claims handling", icon: "fa-handshake" }
+            ].map((step, i) => (
+              <FadeIn key={i} delay={i * 150} direction="up">
+                <div className="relative z-10 bg-white pt-4 text-center group">
+                  <div className="w-24 h-24 mx-auto bg-white border border-gray-100 rounded-full flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:border-brand-gold transition-colors duration-500 relative">
+                    <span className="absolute -top-3 bg-brand-grey text-[10px] font-bold px-2 py-1 rounded border border-gray-200">0{i + 1}</span>
+                    <i className={`fas ${step.icon} text-brand-black group-hover:text-brand-gold transition-colors`}></i>
+                  </div>
+                  <h4 className="font-serif font-bold text-xl mb-3 text-brand-black">{step.title}</h4>
+                  <p className="text-sm text-gray-500 leading-relaxed px-4">{step.desc}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function About() {
+  return (
+    <section id="about" className="py-32 bg-brand-grey relative overflow-hidden">
+      <div className="absolute top-0 right-0 -mr-48 -mt-48 w-[600px] h-[600px] bg-brand-gold/5 rounded-full blur-3xl"></div>
+      <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center relative z-10">
+        <FadeIn direction="right">
+          <div className="relative pl-8 pt-8">
+             <div className="absolute inset-0 bg-brand-gold/20 rounded-br-[100px] z-0"></div>
+             <div className="relative bg-white p-12 shadow-2xl border-l-4 border-brand-gold z-10">
+                <i className="fas fa-quote-left text-6xl text-gray-100 absolute top-8 right-8 z-0"></i>
+                <h3 className="text-4xl font-serif font-bold text-brand-black mb-8 relative z-10 leading-snug">
+                  "We don't just sell policies.<br/>We engineer <span className="text-brand-gold">resilience</span>."
+                </h3>
+                <p className="text-gray-600 mb-10 text-lg leading-relaxed relative z-10 font-light">
+                  Founded in 1998 by Berkeley and Trina Pretorius, Praeto has grown from a family brokerage into a risk management powerhouse.
+                </p>
+                <div className="flex items-center space-x-6 relative z-10">
+                  <div>
+                    <div className="text-sm font-bold uppercase tracking-widest text-brand-black mb-1">Berkeley Pretorius</div>
+                    <div className="text-xs text-brand-gold">Founding Member</div>
+                  </div>
+                  <div className="w-px h-10 bg-gray-200"></div>
+                  <div>
+                    <div className="text-sm font-bold uppercase tracking-widest text-brand-black mb-1">Keshnee Pretorius</div>
+                    <div className="text-xs text-brand-gold">Member</div>
+                  </div>
+                </div>
+             </div>
+          </div>
+        </FadeIn>
+        
+        <FadeIn direction="left">
+          <h2 className="text-4xl font-serif font-bold text-brand-black mb-12">Why choose Praeto?</h2>
+          <div className="space-y-10">
+            {[
+              { title: "Level 1 B-BBEE", desc: "135% procurement recognition. 40% Black Female Owned.", icon: "fa-certificate" },
+              { title: "Proven Expertise", desc: `Licensed FSP ${COMPANY_DETAILS.fsp} & CMS ${COMPANY_DETAILS.cms}.`, icon: "fa-id-badge" },
+              { title: "Stability & Trust", desc: "27+ years of unbroken service with a 98% client retention rate.", icon: "fa-landmark" }
+            ].map((item, i) => (
+              <div key={i} className="flex items-start group">
+                <div className="flex-shrink-0 w-16 h-16 rounded bg-white text-brand-black flex items-center justify-center text-2xl mr-8 shadow-md border border-gray-100 group-hover:bg-brand-gold group-hover:text-white transition-all duration-300">
+                  <i className={`fas ${item.icon}`}></i>
+                </div>
+                <div>
+                  <h4 className="text-xl font-serif font-bold text-brand-black mb-3">{item.title}</h4>
+                  <p className="text-gray-600 leading-relaxed text-sm">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function TestimonialsSection() {
+  return (
+    <section className="py-32 bg-brand-black text-white relative overflow-hidden">
+       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-gray-800/40 via-brand-black to-brand-black"></div>
+      <div className="max-w-5xl mx-auto px-6 relative z-10">
+        <FadeIn>
+          <div className="text-center mb-20">
+             <i className="fas fa-comments text-brand-gold text-4xl mb-6 opacity-50"></i>
+             <h3 className="text-4xl font-serif font-bold">Voices of Trust</h3>
+          </div>
+        </FadeIn>
+        <div className="grid md:grid-cols-2 gap-10">
+          {TESTIMONIALS.map((t, i) => (
+            <FadeIn key={i} delay={i * 200} className="h-full">
+              <blockquote className="h-full bg-white/5 backdrop-blur-sm border border-white/5 p-10 hover:border-brand-gold/30 transition-all duration-500">
+                <div className="flex text-brand-gold mb-6 text-xs space-x-1">
+                  <i className="fas fa-star"></i>
+                  <i className="fas fa-star"></i>
+                  <i className="fas fa-star"></i>
+                  <i className="fas fa-star"></i>
+                  <i className="fas fa-star"></i>
+                </div>
+                <p className="text-xl font-serif italic text-gray-200 mb-10 leading-relaxed">“{t.text}”</p>
+                <footer className="flex items-center mt-auto border-t border-white/10 pt-6">
+                   <div className="w-10 h-10 rounded-full bg-brand-gold flex items-center justify-center text-black font-bold text-sm mr-4">
+                      {t.author.charAt(0)}
+                   </div>
+                   <div>
+                      <cite className="not-italic text-sm font-bold text-white block tracking-wide uppercase">{t.author.split(',')[0]}</cite>
+                      <span className="text-xs text-gray-500 font-medium">{t.author.split(',').slice(1).join(',')}</span>
+                   </div>
+                </footer>
+              </blockquote>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function QuoteForm() {
+  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setLoading(false);
+    setDone(true);
+  };
+
+  if (done) return (
+    <FadeIn className="text-center py-20 px-6 bg-white shadow-2xl border-t-4 border-brand-gold">
+      <div className="w-24 h-24 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto mb-8">
+         <i className="fas fa-check text-brand-gold text-4xl" aria-hidden="true"></i>
+      </div>
+      <h4 className="text-3xl font-serif font-bold text-brand-black mb-4">Request Received</h4>
+      <p className="text-gray-600 mb-10 max-w-md mx-auto leading-relaxed">We have received your details. One of our risk engineers will be in touch shortly to discuss your tailored solution.</p>
+      <button onClick={() => setDone(false)} className="px-8 py-3 bg-brand-black text-white text-xs font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-black transition-colors">Submit another request</button>
+    </FadeIn>
+  );
+
+  return (
+    <FadeIn className="bg-white shadow-2xl p-8 md:p-12 border-t-4 border-brand-gold relative">
+      <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-8">
+        <div className="md:col-span-2 mb-6">
+           <h4 className="text-2xl font-serif font-bold text-brand-black mb-2">Start your consultation</h4>
+           <p className="text-gray-500 text-sm">Fill in the details below for a no-obligation risk assessment.</p>
+        </div>
+
+        <div className="group">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Full name</label>
+          <input type="text" required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300" placeholder="John Doe" />
+        </div>
+        
+        <div className="group">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Email Address</label>
+          <input type="email" required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300" placeholder="john@company.com" />
+        </div>
+
+        <div className="group">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Phone Number</label>
+          <input type="tel" required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300" placeholder="+27 ..." />
+        </div>
+
+        <div className="group">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Requirement</label>
+          <select required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl text-gray-700 appearance-none cursor-pointer">
+                <option value="">Select Cover Type...</option>
+                <option>Business All Risk</option>
+                <option>Fleet / Commercial Hull</option>
+                <option>Medical Aid / Gap Cover</option>
+                <option>Life / Funeral</option>
+                <option>Engineering / Liability</option>
+          </select>
+        </div>
+
+        <div className="md:col-span-2 group">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Message (Optional)</label>
+          <textarea rows={3} className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300 resize-none" placeholder="Tell us about your specific needs..."></textarea>
+        </div>
+
+        <div className="md:col-span-2 flex items-start py-2">
+          <input id="po" type="checkbox" required className="mt-1 mr-3 accent-brand-gold h-4 w-4" />
+          <label htmlFor="po" className="text-xs text-gray-500 leading-relaxed cursor-pointer select-none">
+              I authorize Praeto Risk & Insurance Management Solutions to process my personal information in accordance with POPIA for the purpose of providing a quotation.
+          </label>
+        </div>
+
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="md:col-span-2 bg-brand-black text-white text-sm font-bold uppercase tracking-[0.2em] py-5 hover:bg-brand-gold hover:text-black transition-all disabled:opacity-70 disabled:cursor-not-allowed group"
+        >
+          {loading ? (
+            <span>Processing...</span>
+          ) : (
+            <span className="flex items-center justify-center">
+              {MAIN_CTA} <i className="fas fa-arrow-right ml-3 transform group-hover:translate-x-1 transition-transform"></i>
+            </span>
+          )}
+        </button>
+      </form>
+    </FadeIn>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="bg-brand-black text-gray-400 text-sm border-t border-gray-800 relative z-20">
+      <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-4 gap-12">
+        <div className="col-span-1 md:col-span-1">
+          <div className="flex items-center space-x-2 mb-8">
+            <span className="text-brand-gold text-2xl">
+                <i className="fas fa-shield-alt" aria-hidden="true"></i>
+            </span>
+            <span className="font-serif font-bold text-white text-2xl tracking-tight">Praeto</span>
+          </div>
+          <div className="space-y-4 text-xs leading-relaxed">
+             <p className="flex items-start"><i className="fas fa-map-marker-alt w-6 mt-0.5 text-brand-gold"></i> <span className="flex-1">{COMPANY_DETAILS.office}</span></p>
+             <p className="flex items-center"><i className="fas fa-phone w-6 text-brand-gold"></i> <a href={`tel:${COMPANY_DETAILS.tel.replace(/\s/g,'')}`} className="hover:text-white transition">{COMPANY_DETAILS.tel}</a></p>
+             <p className="flex items-center"><i className="fas fa-envelope w-6 text-brand-gold"></i> <a href={`mailto:${COMPANY_DETAILS.email}`} className="hover:text-white transition">{COMPANY_DETAILS.email}</a></p>
+          </div>
+        </div>
+        
+        <div>
+          <h5 className="font-bold text-white mb-8 uppercase text-[10px] tracking-[0.2em]">Personal</h5>
+          <ul className="space-y-4 text-xs">
+            {PERSONAL_PRODUCTS.slice(0, 5).map(p => (
+                <li key={p}><a href="#solutions" className="hover:text-brand-gold transition-colors block">{p}</a></li>
+            ))}
+          </ul>
+        </div>
+        
+        <div>
+          <h5 className="font-bold text-white mb-8 uppercase text-[10px] tracking-[0.2em]">Business</h5>
+          <ul className="space-y-4 text-xs">
+            {BUSINESS_PRODUCTS.slice(0, 5).map(p => (
+                <li key={p}><a href="#solutions" className="hover:text-brand-gold transition-colors block">{p}</a></li>
+            ))}
+          </ul>
+        </div>
+        
+        <div>
+          <h5 className="font-bold text-white mb-8 uppercase text-[10px] tracking-[0.2em]">Compliance</h5>
+          <ul className="space-y-4 text-xs text-gray-500">
+            <li className="flex justify-between border-b border-gray-800 pb-2"><span>FSP Number</span> <span className="text-gray-300">{COMPANY_DETAILS.fsp}</span></li>
+            <li className="flex justify-between border-b border-gray-800 pb-2"><span>CMS Ref</span> <span className="text-gray-300">{COMPANY_DETAILS.cms}</span></li>
+            <li className="flex justify-between border-b border-gray-800 pb-2"><span>Reg No</span> <span className="text-gray-300">{COMPANY_DETAILS.regNo.split('/')[1]}...</span></li>
+            <li className="pt-4"><a href="#" className="hover:text-brand-gold transition-colors flex items-center"><i className="fas fa-file-pdf mr-2"></i>Download PAIA Manual</a></li>
+          </ul>
+        </div>
+      </div>
+      <div className="bg-black px-6 py-8 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-[10px] uppercase tracking-widest opacity-50">
+                © {new Date().getFullYear()} {COMPANY_DETAILS.tradingName}. All rights reserved.
+            </div>
+            <div className="flex space-x-6 text-lg">
+                <a href="#" className="text-gray-500 hover:text-white transition transform hover:-translate-y-1"><i className="fab fa-linkedin"></i></a>
+                <a href="#" className="text-gray-500 hover:text-white transition transform hover:-translate-y-1"><i className="fab fa-facebook"></i></a>
+            </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export default function App() {
+  return (
+    <div className="antialiased text-gray-900 bg-white selection:bg-brand-gold selection:text-white">
+      <Cursor />
+      <Header />
+      <main>
+        <Hero />
+        <StatsSection />
+        <PartnersBanner />
+        <QuotingProcess />
+        <SolutionsSection />
+        <About />
+        <TestimonialsSection />
+        <div id="quote" className="bg-gray-50 py-24">
+          <div className="max-w-5xl mx-auto px-6">
+            <QuoteForm />
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
