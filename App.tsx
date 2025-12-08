@@ -36,10 +36,11 @@ function Hero() {
     <section className="relative bg-brand-black text-white overflow-hidden min-h-[75vh] flex items-center">
       {/* Background Image with Ken Burns Effect */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <img 
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80" 
-          alt="Skyscrapers" 
-          className="w-full h-full object-cover opacity-30 animate-ken-burns origin-center" 
+        {/* Use background-image for more reliable positioning and overlays */}
+        <div
+          className="absolute inset-0 bg-center bg-cover opacity-30 animate-ken-burns"
+          style={{ backgroundImage: `url('/hero.png')` }}
+          aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-brand-black/90 to-brand-black/50"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent"></div>
@@ -49,7 +50,7 @@ function Hero() {
         <FadeIn direction="up">
           <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 rounded-full px-5 py-2 mb-8 backdrop-blur-md shadow-lg">
             <span className="w-2 h-2 rounded-full bg-brand-gold animate-pulse shadow-[0_0_8px_#D4AF37]"></span>
-            <span className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">Est. 1998 • FSP {COMPANY_DETAILS.fsp}</span>
+            <span className="text-brand-gold text-xs font-bold uppercase tracking-[0.2em]">Est. 1998 • FSCA {COMPANY_DETAILS.fsca}</span>
           </div>
           
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight tracking-tight mb-8 drop-shadow-xl">
@@ -66,7 +67,7 @@ function Hero() {
           <div className="flex flex-col sm:flex-row gap-5">
             <a href="#quote" className="group relative px-10 py-4 bg-brand-gold text-brand-black font-bold text-sm uppercase tracking-widest rounded overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]">
               <div className="absolute inset-0 w-full h-full bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
-              <span className="relative">Get Started</span>
+              <span className="relative">Get a tailored Quote</span>
             </a>
             <a 
               href={`https://wa.me/${COMPANY_DETAILS.tel.replace(/\s/g,'')}`} 
@@ -111,7 +112,7 @@ function Hero() {
         <div className="w-[1px] h-8 bg-gradient-to-b from-white to-transparent"></div>
       </div>
     </section>
-  );
+  )
 }
 
 function StatsSection() {
@@ -145,6 +146,31 @@ function StatsSection() {
 function SolutionsSection() {
   const [activeTab, setActiveTab] = useState<'personal' | 'business'>('personal');
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Listen for header-driven navigation events so clicks in `Header` can switch tabs
+  React.useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent;
+      const detail = ce?.detail || {};
+      if (detail.section === 'solutions') {
+        const tab = detail.tab === 'business' ? 'business' : 'personal';
+        if (tab !== activeTab) {
+          // Use the existing tab change logic
+          setIsAnimating(true);
+          setActiveTab(tab);
+          setTimeout(() => setIsAnimating(false), 400);
+        }
+        // Ensure the section is visible
+        const el = document.getElementById('solutions');
+        if (el) {
+          setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 50);
+        }
+      }
+    };
+
+    window.addEventListener('praeto:navigate', handler as EventListener);
+    return () => window.removeEventListener('praeto:navigate', handler as EventListener);
+  }, [activeTab]);
 
   const handleTabChange = (tab: 'personal' | 'business') => {
     if (activeTab === tab) return;
@@ -201,25 +227,26 @@ function SolutionsSection() {
         <div 
           className={`grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-all duration-500 ease-out ${isAnimating ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'}`}
         >
-          {items.map((item, i) => (
-            <div key={`${activeTab}-${i}`} className={`group relative p-8 rounded shadow-sm hover:shadow-2xl border transition-all duration-300 hover:-translate-y-2 ${cardBg}`}>
-              <div className="flex flex-col h-full">
-                <div className={`w-14 h-14 mb-6 rounded-full flex items-center justify-center text-2xl transition-colors ${activeTab === 'personal' ? 'bg-gray-50 text-brand-gold group-hover:bg-brand-gold group-hover:text-white' : 'bg-white/10 text-brand-gold group-hover:bg-brand-gold group-hover:text-black'}`}>
-                  <i className={`fas ${getIconForProduct(item)}`}></i>
-                </div>
-                <div>
-                  <h4 className={`font-serif font-bold text-lg leading-tight mb-3 ${activeTab === 'personal' ? 'text-brand-black' : 'text-white'}`}>{item}</h4>
-                  <p className={`text-xs leading-relaxed ${activeTab === 'personal' ? 'text-gray-500' : 'text-gray-400'}`}>
-                    Comprehensive coverage designed for your specific needs.
-                  </p>
-                </div>
-                <div className="mt-auto pt-6 flex items-center text-xs font-bold uppercase tracking-widest text-brand-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
-                   <span>Learn More</span>
-                   <i className="fas fa-arrow-right ml-2"></i>
+          {items.map((item, i) => {
+            const title = typeof item === 'string' ? item : item.name;
+            const desc = typeof item === 'string' ? undefined : item.desc;
+            return (
+              <div key={`${activeTab}-${i}`} className={`group relative p-8 rounded shadow-sm hover:shadow-2xl border transition-all duration-300 hover:-translate-y-2 ${cardBg}`}>
+                <div className="flex flex-col h-full">
+                  <div className={`w-14 h-14 mb-6 rounded-full flex items-center justify-center text-2xl transition-colors ${activeTab === 'personal' ? 'bg-gray-50 text-brand-gold group-hover:bg-brand-gold group-hover:text-white' : 'bg-white/10 text-brand-gold group-hover:bg-brand-gold group-hover:text-black'}`}>
+                    <i className={`fas ${getIconForProduct(title)}`}></i>
+                  </div>
+                  <div>
+                    <h4 className={`font-serif font-bold text-lg leading-tight mb-3 ${activeTab === 'personal' ? 'text-brand-black' : 'text-white'}`}>{title}</h4>
+                    <p className={`text-xs leading-relaxed ${activeTab === 'personal' ? 'text-gray-500' : 'text-gray-400'}`}>
+                      {desc ?? 'Comprehensive coverage designed for your specific needs.'}
+                    </p>
+                  </div>
+                  {/* Removed 'Learn More' CTA per request */}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -239,20 +266,23 @@ function QuotingProcess() {
         
         <div className="relative">
           {/* Connecting Line (Desktop) */}
+
           <div className="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gray-200 z-0"></div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-12">
             {[
-              { title: "Assessment", desc: "Site visits & engineering surveys", icon: "fa-search-location" },
-              { title: "Analysis", desc: "Quantifying exposure & gaps", icon: "fa-chart-pie" },
-              { title: "Design", desc: "Structuring the optimal programme", icon: "fa-drafting-compass" },
-              { title: "Management", desc: "Continuous claims handling", icon: "fa-handshake" }
+              { title: "Risk Assessment", desc: "Site visits & assessments with proposal document", icon: "fa-search-location" },
+              { title: "Quote Analysis", desc: "Identify insurance exposure & gaps", icon: "fa-chart-pie" },
+              { title: "Design", desc: "Structuring & Activating the optimal policy", icon: "fa-drafting-compass" },
+              { title: "Management", desc: "Continuous claims handling & equipment tracking", icon: "fa-handshake" },
+              { title: "Review", desc: "Quarterly client reviews", icon: "fa-clipboard-check" }
+
             ].map((step, i) => (
               <FadeIn key={i} delay={i * 150} direction="up">
                 <div className="relative z-10 bg-white pt-4 text-center group">
                   <div className="w-24 h-24 mx-auto bg-white border border-gray-100 rounded-full flex items-center justify-center text-3xl mb-8 shadow-lg group-hover:border-brand-gold transition-colors duration-500 relative">
                     <span className="absolute -top-3 bg-brand-grey text-[10px] font-bold px-2 py-1 rounded border border-gray-200">0{i + 1}</span>
-                    <i className={`fas ${step.icon} text-brand-black group-hover:text-brand-gold transition-colors`}></i>
+                    <i className={`fas ${step.icon} text-brand-black group-hover:text-brand-gold transition-colors`} aria-hidden="true"></i>
                   </div>
                   <h4 className="font-serif font-bold text-xl mb-3 text-brand-black">{step.title}</h4>
                   <p className="text-sm text-gray-500 leading-relaxed px-4">{step.desc}</p>
@@ -302,7 +332,7 @@ function About() {
           <div className="space-y-10">
             {[
               { title: "Level 1 B-BBEE", desc: "135% procurement recognition. 40% Black Female Owned.", icon: "fa-certificate" },
-              { title: "Proven Expertise", desc: `Licensed FSP ${COMPANY_DETAILS.fsp} & CMS ${COMPANY_DETAILS.cms}.`, icon: "fa-id-badge" },
+              { title: "Proven Expertise", desc: `Licensed FSCA ${COMPANY_DETAILS.fsca} & CMS ${COMPANY_DETAILS.cms}.`, icon: "fa-id-badge" },
               { title: "Stability & Trust", desc: "27+ years of unbroken service with a 98% client retention rate.", icon: "fa-landmark" }
             ].map((item, i) => (
               <div key={i} className="flex items-start group">
@@ -370,9 +400,58 @@ function QuoteForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setLoading(false);
-    setDone(true);
+    
+    // Capture form data
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const fullName = (formData.get('fullName') ?? '').toString().trim();
+    const email = (formData.get('email') ?? '').toString().trim();
+    const phoneNumber = (formData.get('phoneNumber') ?? '').toString().trim();
+    const requirement = (formData.get('requirement') ?? '').toString().trim();
+    const message = (formData.get('message') ?? '').toString().trim();
+    const consentValue = formData.get('popiaConsent');
+    const popiaConsent = consentValue === 'true' || consentValue === 'on' || consentValue === '1';
+
+    if (!fullName || !email || !phoneNumber || !requirement) {
+      setLoading(false);
+      alert('Please complete all required fields before submitting.');
+      return;
+    }
+
+    const payload = {
+      fullName,
+      email,
+      phoneNumber,
+      requirement,
+      message,
+      popiaConsent
+    };
+
+    const endpoint = import.meta.env.VITE_QUOTE_ENDPOINT ?? 'https://submit-form.com/your-form-id';
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        form.reset();
+        setDone(true);
+      } else {
+        const errorText = await response.text();
+        console.error('Form submission failed:', errorText);
+        alert('Failed to submit your request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (done) return (
@@ -395,40 +474,79 @@ function QuoteForm() {
         </div>
 
         <div className="group">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Full name</label>
-          <input type="text" required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300" placeholder="John Doe" />
+          <label htmlFor="fullName" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Full name</label>
+          <input
+            id="fullName"
+            name="fullName"
+            type="text"
+            required
+            className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300"
+            placeholder="John Doe"
+          />
         </div>
         
         <div className="group">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Email Address</label>
-          <input type="email" required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300" placeholder="john@company.com" />
+          <label htmlFor="email" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Email Address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300"
+            placeholder="john@company.com"
+          />
         </div>
 
         <div className="group">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Phone Number</label>
-          <input type="tel" required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300" placeholder="+27 ..." />
+          <label htmlFor="phoneNumber" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Phone Number</label>
+          <input
+            id="phoneNumber"
+            name="phoneNumber"
+            type="tel"
+            required
+            pattern="^\+?[0-9\s\-()]{7,25}$"
+            className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300"
+            placeholder="+27 ..."
+          />
         </div>
 
         <div className="group">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Requirement</label>
-          <select required className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl text-gray-700 appearance-none cursor-pointer">
-                <option value="">Select Cover Type...</option>
-                <option>Business All Risk</option>
-                <option>Fleet / Commercial Hull</option>
-                <option>Medical Aid / Gap Cover</option>
-                <option>Life / Funeral</option>
-                <option>Engineering / Liability</option>
+          <label htmlFor="requirement" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Requirement</label>
+          <select
+            id="requirement"
+            name="requirement"
+            required
+            className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl text-gray-700 appearance-none cursor-pointer"
+          >
+                  <option value="">Select Cover Type...</option>
+                  <optgroup label="Personal">
+                    {PERSONAL_PRODUCTS.map((p) => (
+                      <option key={`personal-${p.name}`} value={p.name}>{p.name}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Business">
+                    {BUSINESS_PRODUCTS.map((p) => (
+                      <option key={`business-${p.name}`} value={p.name}>{p.name}</option>
+                    ))}
+                  </optgroup>
           </select>
         </div>
 
         <div className="md:col-span-2 group">
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Message (Optional)</label>
-          <textarea rows={3} className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300 resize-none" placeholder="Tell us about your specific needs..."></textarea>
+          <label htmlFor="message" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 group-focus-within:text-brand-gold transition-colors">Message (Optional)</label>
+          <textarea
+            id="message"
+            name="message"
+            rows={3}
+            className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-brand-gold focus:outline-none transition-all font-serif text-xl placeholder-gray-300 resize-none"
+            placeholder="Tell us about your specific needs..."
+          ></textarea>
         </div>
 
         <div className="md:col-span-2 flex items-start py-2">
-          <input id="po" type="checkbox" required className="mt-1 mr-3 accent-brand-gold h-4 w-4" />
-          <label htmlFor="po" className="text-xs text-gray-500 leading-relaxed cursor-pointer select-none">
+          <input id="popiaConsent" name="popiaConsent" type="checkbox" value="true" required className="mt-1 mr-3 accent-brand-gold h-4 w-4" />
+          <label htmlFor="popiaConsent" className="text-xs text-gray-500 leading-relaxed cursor-pointer select-none">
               I authorize Praeto Risk & Insurance Management Solutions to process my personal information in accordance with POPIA for the purpose of providing a quotation.
           </label>
         </div>
@@ -460,7 +578,10 @@ function Footer() {
             <span className="text-brand-gold text-2xl">
                 <i className="fas fa-shield-alt" aria-hidden="true"></i>
             </span>
-            <span className="font-serif font-bold text-white text-2xl tracking-tight">Praeto</span>
+            <div className="flex items-center">
+              <img src="/praeto-word.png" alt="Praeto" className="w-28 md:w-32 lg:w-36 h-auto object-contain" />
+              <span className="sr-only">Praeto</span>
+            </div>
           </div>
           <div className="space-y-4 text-xs leading-relaxed">
              <p className="flex items-start"><i className="fas fa-map-marker-alt w-6 mt-0.5 text-brand-gold"></i> <span className="flex-1">{COMPANY_DETAILS.office}</span></p>
@@ -473,7 +594,7 @@ function Footer() {
           <h5 className="font-bold text-white mb-8 uppercase text-[10px] tracking-[0.2em]">Personal</h5>
           <ul className="space-y-4 text-xs">
             {PERSONAL_PRODUCTS.slice(0, 5).map(p => (
-                <li key={p}><a href="#solutions" className="hover:text-brand-gold transition-colors block">{p}</a></li>
+                <li key={p.name}><a href="#solutions" className="hover:text-brand-gold transition-colors block">{p.name}</a></li>
             ))}
           </ul>
         </div>
@@ -482,7 +603,7 @@ function Footer() {
           <h5 className="font-bold text-white mb-8 uppercase text-[10px] tracking-[0.2em]">Business</h5>
           <ul className="space-y-4 text-xs">
             {BUSINESS_PRODUCTS.slice(0, 5).map(p => (
-                <li key={p}><a href="#solutions" className="hover:text-brand-gold transition-colors block">{p}</a></li>
+                <li key={p.name}><a href="#solutions" className="hover:text-brand-gold transition-colors block">{p.name}</a></li>
             ))}
           </ul>
         </div>
@@ -490,7 +611,7 @@ function Footer() {
         <div>
           <h5 className="font-bold text-white mb-8 uppercase text-[10px] tracking-[0.2em]">Compliance</h5>
           <ul className="space-y-4 text-xs text-gray-500">
-            <li className="flex justify-between border-b border-gray-800 pb-2"><span>FSP Number</span> <span className="text-gray-300">{COMPANY_DETAILS.fsp}</span></li>
+            <li className="flex justify-between border-b border-gray-800 pb-2"><span>FSCA Number</span> <span className="text-gray-300">{COMPANY_DETAILS.fsca}</span></li>
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>CMS Ref</span> <span className="text-gray-300">{COMPANY_DETAILS.cms}</span></li>
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>Reg No</span> <span className="text-gray-300">{COMPANY_DETAILS.regNo.split('/')[1]}...</span></li>
             <li className="pt-4"><a href="#" className="hover:text-brand-gold transition-colors flex items-center"><i className="fas fa-file-pdf mr-2"></i>Download PAIA Manual</a></li>
@@ -506,6 +627,14 @@ function Footer() {
                 <a href="#" className="text-gray-500 hover:text-white transition transform hover:-translate-y-1"><i className="fab fa-linkedin"></i></a>
                 <a href="#" className="text-gray-500 hover:text-white transition transform hover:-translate-y-1"><i className="fab fa-facebook"></i></a>
             </div>
+            <a
+              href="https://www.linkedin.com/in/jaden-roskruge01/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[9px] uppercase tracking-[0.35em] text-gray-400 opacity-10 hover:opacity-60 transition hidden md:block"
+            >
+              Crafted by J.R.
+            </a>
         </div>
       </div>
     </footer>

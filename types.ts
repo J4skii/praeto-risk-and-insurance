@@ -2,7 +2,7 @@ export interface CompanyDetails {
   regName: string;
   tradingName: string;
   regNo: string;
-  fsp: string;
+  fsca: string;
   cms: string;
   tax: string;
   vat: string;

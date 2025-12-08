@@ -2,7 +2,7 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
       // Explicitly define the project root. This ensures Vite looks for its modules
@@ -12,6 +12,13 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        proxy: {
+          '/api': {
+            target: 'http://localhost:4173/',
+            changeOrigin: true,
+            secure: false,
+          },
+        },
       },
       plugins: [react()],
       define: {
@@ -24,6 +31,6 @@ export default defineConfig(({ mode }) => {
           // This change is purely stylistic and not the primary fix for your current error.
           '@': path.join(__dirname, 'src'),
         }
-      }
+      },
     };
 });

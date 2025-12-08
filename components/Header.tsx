@@ -28,29 +28,44 @@ export const Header: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <div className="flex items-center space-x-3 relative z-50 group cursor-pointer">
-          <span className="text-3xl text-brand-gold transition-all duration-300 transform group-hover:rotate-12">
-            <i className="fas fa-shield-alt" aria-hidden="true"></i>
-          </span>
-          <div>
-            <h1 className={`text-2xl font-serif font-bold tracking-tight transition-colors duration-300 ${isScrolled || isMobileMenuOpen ? 'text-brand-black' : 'text-white'}`}>
-              Praeto
-            </h1>
+        <div className="flex items-center relative z-50 group cursor-pointer">
+          <div className="flex items-center">
+            {/* Keep accessible heading for screen readers */}
+            <h1 className="sr-only">Praeto</h1>
+
+            {/* Visible header wordmark — place `praeto-word.png` in `public/` */}
+            <img src="/praeto-word.png" alt="" aria-hidden="true" className="w-28 md:w-32 lg:w-40 h-auto object-contain drop-shadow-2xl" />
           </div>
         </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide">
-          {['Personal', 'Business', 'About'].map((item) => (
-            <a 
-              key={item}
-              href={`#${item.toLowerCase()}`} 
-              className={`relative px-1 py-2 transition-colors duration-200 hover:text-brand-gold group ${isScrolled ? 'text-gray-800' : 'text-white/90'}`}
-            >
-              {item}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-gold transition-all duration-300 group-hover:w-full"></span>
-            </a>
-          ))}
+          {['Personal', 'Business', 'About'].map((item) => {
+            const handleClick = (e: React.MouseEvent) => {
+              // For Personal/Business, dispatch a custom event so the Solutions section can switch tabs
+              if (item === 'Personal' || item === 'Business') {
+                e.preventDefault();
+                const detail = { section: 'solutions', tab: item.toLowerCase() === 'personal' ? 'personal' : 'business' };
+                window.dispatchEvent(new CustomEvent('praeto:navigate', { detail }));
+                // Smooth-scroll to the solutions section
+                const el = document.getElementById('solutions');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }
+              // About uses the native anchor to #about
+            };
+
+            return (
+              <a 
+                key={item}
+                href={`#${item.toLowerCase()}`} 
+                onClick={handleClick}
+                className={`relative px-1 py-2 transition-colors duration-200 hover:text-brand-gold group ${isScrolled ? 'text-gray-800' : 'text-white/90'}`}
+              >
+                {item}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-gold transition-all duration-300 group-hover:w-full"></span>
+              </a>
+            );
+          })}
           <a 
             href="#quote" 
             className={`px-6 py-3 rounded text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-sm hover:shadow-lg transform hover:-translate-y-0.5 ${
