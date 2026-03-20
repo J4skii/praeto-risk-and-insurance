@@ -12,13 +12,29 @@ React + Vite marketing site for Praeto Risk & Insurance, styled with Tailwind CS
 - Start the dev server: `npm run dev`
 - Build for production: `npm run build`
 
-## Firebase Hosting Deployment
+## Hosting
 
-- Ensure you are logged in: `npx firebase login`
-- Create or select a Firebase project, then set the ID in `.firebaserc`
-- Associate the project locally: `npx firebase use <project-id>`
-- Build the site: `npm run build`
-- Deploy to Hosting: `npm run deploy:firebase`
+The site is live on **Firebase Hosting**:
+
+| URL | Notes |
+|---|---|
+| https://praeto.co.za | Primary custom domain |
+| https://www.praeto.co.za | www redirect |
+| https://praeto-web.web.app | Firebase default domain |
+
+The last production deploy was **28 November 2025**.
+
+## Deploying
+
+1. Install Firebase CLI: `npm install -g firebase-tools`
+2. Log in: `npx firebase login`
+3. Select the project: `npx firebase use praeto-web`
+4. Build and deploy:
+   ```bash
+   npm run build
+   firebase deploy --only hosting
+   ```
+
 
 ### Quote Form Endpoint
 
