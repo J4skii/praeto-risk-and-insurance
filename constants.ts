@@ -197,8 +197,10 @@ export const PARTNERS: Partner[] = [
 ];
 
 export const TESTIMONIALS: Testimonial[] = [
-  { text: "Praeto's risk survey reduced our premium by 22 % and we still had wider cover.", author: "Financial Manager, Gamagara Municipality" },
-  { text: "Claims ratio below 7 % for three years running — unrivalled value.", author: "Risk Officer, Ray Nkonyeni LM" }
+  { text: "Praeto's risk survey reduced our premium by 22% and we still had wider cover.", author: "Financial Manager, Gamagara Municipality" },
+  { text: "Claims ratio below 7% for three years running — unrivalled value.", author: "Risk Officer, Ray Nkonyeni LM" },
+  { text: "Switching to Praeto was the best financial decision we made. Prompt, professional, and genuinely invested in our success.", author: "Director, KZN Construction Group" },
+  { text: "As a Level 1 B-BBEE brokerage, Praeto aligns perfectly with our transformation targets without compromising on quality of service.", author: "Supply Chain Manager, Eastern Cape Municipality" }
 ];
 
 export const MAIN_CTA = "Get a tailored quote";

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   COMPANY_DETAILS, 
   STATS, 
@@ -13,6 +13,7 @@ import { AnimatedStat } from './components/AnimatedStat';
 import { FadeIn } from './components/FadeIn';
 import { Cursor } from './components/Cursor';
 import { PartnersBanner } from './components/Partners';
+import { CookieBanner } from './components/CookieBanner';
 
 // Helper to guess icon based on keywords
 const getIconForProduct = (name: string) => {
@@ -585,7 +586,15 @@ function Footer() {
              <p className="flex items-center"><i className="fas fa-phone w-6 text-brand-gold"></i> <a href={`tel:${COMPANY_DETAILS.tel.replace(/\s/g,'')}`} className="hover:text-white transition">{COMPANY_DETAILS.tel}</a></p>
              <p className="flex items-center"><i className="fas fa-envelope w-6 text-brand-gold"></i> <a href={`mailto:${COMPANY_DETAILS.email}`} className="hover:text-white transition">{COMPANY_DETAILS.email}</a></p>
           </div>
-          <p className="mt-6 text-[10px] uppercase tracking-[0.2em] text-brand-gold/60 font-medium">Insurance is our business</p>
+          <a
+            href="https://maps.google.com/?q=63+Eight+Avenue+Windermere+Durban+4001"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center text-[10px] uppercase tracking-widest text-gray-500 hover:text-brand-gold transition-colors"
+          >
+            <i className="fas fa-map-marker-alt mr-2 text-brand-gold"></i> Get Directions
+          </a>
+          <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-brand-gold/60 font-medium">Insurance is our business</p>
         </div>
         
         <div>
@@ -634,6 +643,219 @@ function Footer() {
   );
 }
 
+function AccreditationStrip() {
+  const badges = [
+    { icon: 'fa-certificate', label: 'FSCA Licensed', sub: `FSP ${COMPANY_DETAILS.fsca}` },
+    { icon: 'fa-award', label: 'Level 1 B-BBEE', sub: '40% Black Female Owned' },
+    { icon: 'fa-id-card', label: 'CMS Registered', sub: `Ref ${COMPANY_DETAILS.cms}` },
+    { icon: 'fa-landmark', label: 'Est. 1998', sub: '27+ Years of Service' },
+  ];
+  return (
+    <section className="py-12 bg-brand-grey border-y border-gray-100">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {badges.map((b, i) => (
+            <div key={i} className="flex items-center space-x-4 group">
+              <div className="w-12 h-12 flex-shrink-0 rounded-full bg-white border border-gray-200 flex items-center justify-center text-brand-gold text-lg shadow-sm group-hover:border-brand-gold transition-colors duration-300">
+                <i className={`fas ${b.icon}`}></i>
+              </div>
+              <div>
+                <div className="text-xs font-bold text-brand-black uppercase tracking-wide">{b.label}</div>
+                <div className="text-[10px] text-gray-500 mt-0.5">{b.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function WhyBrokerSection() {
+  const points = [
+    { icon: 'fa-balance-scale', title: 'Independent Advice', desc: 'We work for you, not the insurer. We compare across all major underwriters to find the best fit — not the highest commission.' },
+    { icon: 'fa-handshake', title: 'Claims Advocacy', desc: 'When you claim, we fight in your corner. Our 15% claims ratio is proof — we structure cover that actually pays out.' },
+    { icon: 'fa-sliders-h', title: 'Tailored Cover', desc: 'Off-the-shelf policies leave gaps. We engineer a programme around your exact risk profile — nothing more, nothing less.' },
+    { icon: 'fa-phone-volume', title: 'Single Point of Contact', desc: 'One call handles everything — new cover, renewals, claims, endorsements. No call centres, no queues.' },
+  ];
+  return (
+    <section className="py-32 bg-white relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6">
+        <FadeIn>
+          <div className="text-center mb-20">
+            <span className="text-brand-gold font-bold tracking-[0.2em] text-xs uppercase mb-4 block">The Broker Advantage</span>
+            <h3 className="text-4xl font-serif font-bold text-brand-black">Why use a broker over going direct?</h3>
+          </div>
+        </FadeIn>
+        <div className="grid md:grid-cols-2 gap-8">
+          {points.map((p, i) => (
+            <FadeIn key={i} delay={i * 100} direction="up">
+              <div className="flex items-start space-x-6 group p-8 border border-gray-100 hover:border-brand-gold transition-all duration-300 hover:shadow-lg">
+                <div className="flex-shrink-0 w-14 h-14 bg-brand-grey rounded flex items-center justify-center text-xl text-brand-gold group-hover:bg-brand-gold group-hover:text-white transition-all duration-300">
+                  <i className={`fas ${p.icon}`}></i>
+                </div>
+                <div>
+                  <h4 className="font-serif font-bold text-xl text-brand-black mb-3">{p.title}</h4>
+                  <p className="text-gray-500 text-sm leading-relaxed">{p.desc}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ClaimsSection() {
+  return (
+    <section id="claims" className="py-32 bg-brand-black text-white relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-brand-gold/5 via-transparent to-transparent pointer-events-none"></div>
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <FadeIn direction="right">
+            <span className="text-brand-gold font-bold tracking-[0.2em] text-xs uppercase mb-6 block">Claims &amp; Emergencies</span>
+            <h3 className="text-4xl font-serif font-bold mb-8">Need to report a claim?</h3>
+            <p className="text-gray-400 leading-relaxed mb-10 text-lg font-light">
+              We manage the entire claims process on your behalf — from first notification to final settlement. Contact us immediately after any incident.
+            </p>
+            <div className="space-y-5">
+              <a href={`tel:${COMPANY_DETAILS.tel.replace(/\s/g,'')}`} className="flex items-center space-x-5 group">
+                <div className="w-12 h-12 rounded bg-brand-gold/10 border border-brand-gold/20 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-black transition-all duration-300">
+                  <i className="fas fa-phone"></i>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-0.5">Office Line</div>
+                  <div className="text-white font-bold">{COMPANY_DETAILS.tel}</div>
+                </div>
+              </a>
+              <a href={`mailto:${COMPANY_DETAILS.email}`} className="flex items-center space-x-5 group">
+                <div className="w-12 h-12 rounded bg-brand-gold/10 border border-brand-gold/20 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-black transition-all duration-300">
+                  <i className="fas fa-envelope"></i>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-0.5">Email</div>
+                  <div className="text-white font-bold">{COMPANY_DETAILS.email}</div>
+                </div>
+              </a>
+              <a href={`https://wa.me/${COMPANY_DETAILS.tel.replace(/\s/g,'')}`} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-5 group">
+                <div className="w-12 h-12 rounded bg-brand-gold/10 border border-brand-gold/20 flex items-center justify-center text-brand-gold group-hover:bg-brand-gold group-hover:text-black transition-all duration-300">
+                  <i className="fab fa-whatsapp"></i>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-0.5">WhatsApp</div>
+                  <div className="text-white font-bold">Send us a message</div>
+                </div>
+              </a>
+            </div>
+          </FadeIn>
+
+          <FadeIn direction="left">
+            <div className="space-y-3">
+              {[
+                { step: '01', title: 'Notify Us Immediately', desc: 'Call, email or WhatsApp us as soon as an incident occurs. Prompt notification protects your claim.' },
+                { step: '02', title: 'Document Everything', desc: 'Photograph damage, collect third-party details, and obtain a case number from SAPS where applicable.' },
+                { step: '03', title: 'We Lodge the Claim', desc: 'Praeto manages the entire submission process with the underwriter on your behalf.' },
+                { step: '04', title: 'Settlement', desc: 'We monitor progress and advocate for a fair, speedy settlement from the insurer.' },
+              ].map((s, i) => (
+                <div key={i} className="flex items-start space-x-6 p-6 border border-white/5 hover:border-brand-gold/30 transition-all duration-300">
+                  <span className="text-brand-gold/30 font-serif font-bold text-4xl leading-none flex-shrink-0">{s.step}</span>
+                  <div>
+                    <h4 className="font-bold text-white mb-2">{s.title}</h4>
+                    <p className="text-gray-500 text-sm leading-relaxed">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FAQSection() {
+  const [open, setOpen] = useState<number | null>(null);
+  const faqs = [
+    { q: 'What is a short-term insurance broker?', a: 'A broker acts as an intermediary between you and insurance underwriters. Unlike going directly to an insurer, a broker shops the market on your behalf, provides independent advice, and advocates for you at claims stage — at no extra cost to you.' },
+    { q: 'How does Praeto get paid?', a: 'Praeto earns a commission from the insurer, built into your premium. You do not pay us separately for advice or administration. This means our service costs you nothing extra compared to going direct.' },
+    { q: `What does FSCA FSP ${COMPANY_DETAILS.fsca} mean?`, a: `The Financial Sector Conduct Authority (FSCA) regulates financial service providers in South Africa. Praeto holds FSP licence ${COMPANY_DETAILS.fsca}, meaning we are legally authorised to provide insurance advice and intermediary services.` },
+    { q: 'What is Level 1 B-BBEE and why does it matter?', a: 'Level 1 is the highest Broad-Based Black Economic Empowerment rating. Clients who procure services from Praeto can recognise 135% of their spend for B-BBEE procurement purposes — a significant advantage for businesses and municipalities.' },
+    { q: 'How do I report a claim?', a: `Call us on ${COMPANY_DETAILS.tel}, email ${COMPANY_DETAILS.email}, or WhatsApp us immediately after an incident. We handle the entire claims submission and management process on your behalf.` },
+    { q: 'How long does a claim take to settle?', a: 'Settlement timelines depend on the complexity and the underwriter. Simple claims (e.g. windscreen, minor vehicle damage) can settle within days. More complex claims are actively tracked and managed by our team throughout.' },
+    { q: 'Can Praeto cover my municipality or government entity?', a: 'Yes. Praeto has extensive experience placing cover for local municipalities, including fleets, public liability, material damage, and personal accident cover for councillors and staff.' },
+    { q: 'What is POPIA and how does it affect my personal data?', a: 'The Protection of Personal Information Act (POPIA) governs how your personal data is collected and used in South Africa. Praeto processes your information solely to provide insurance quotations and services, and does not share it without your consent.' },
+  ];
+  return (
+    <section className="py-32 bg-brand-grey">
+      <div className="max-w-3xl mx-auto px-6">
+        <FadeIn>
+          <div className="text-center mb-16">
+            <span className="text-brand-gold font-bold tracking-[0.2em] text-xs uppercase mb-4 block">Got Questions?</span>
+            <h3 className="text-4xl font-serif font-bold text-brand-black">Frequently Asked Questions</h3>
+          </div>
+        </FadeIn>
+        <div className="space-y-2">
+          {faqs.map((faq, i) => (
+            <FadeIn key={i} delay={i * 40}>
+              <div className="border border-gray-200 bg-white overflow-hidden">
+                <button
+                  onClick={() => setOpen(open === i ? null : i)}
+                  className="w-full flex items-center justify-between px-8 py-6 text-left hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-serif font-semibold text-brand-black pr-8">{faq.q}</span>
+                  <i className={`fas fa-chevron-down text-brand-gold flex-shrink-0 transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`}></i>
+                </button>
+                <div className={`transition-all duration-300 ease-out overflow-hidden ${open === i ? 'max-h-96' : 'max-h-0'}`}>
+                  <p className="px-8 pb-6 pt-4 text-gray-600 text-sm leading-relaxed border-t border-gray-100">{faq.a}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FloatingWhatsApp() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const handler = () => setVisible(window.scrollY > 500);
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
+  return (
+    <a
+      href={`https://wa.me/${COMPANY_DETAILS.tel.replace(/\s/g,'')}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+      className={`fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+    >
+      <i className="fab fa-whatsapp text-white text-2xl"></i>
+    </a>
+  );
+}
+
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const handler = () => setVisible(window.scrollY > 700);
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Back to top"
+      className={`fixed bottom-6 left-6 z-50 w-12 h-12 bg-brand-black border border-white/10 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-brand-gold hover:text-black hover:border-brand-gold transition-all duration-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+    >
+      <i className="fas fa-arrow-up text-sm"></i>
+    </button>
+  );
+}
+
 export default function App() {
   return (
     <div className="antialiased text-gray-900 bg-white selection:bg-brand-gold selection:text-white">
@@ -643,10 +865,14 @@ export default function App() {
         <Hero />
         <StatsSection />
         <PartnersBanner />
+        <AccreditationStrip />
         <QuotingProcess />
         <SolutionsSection />
         <About />
+        <WhyBrokerSection />
         <TestimonialsSection />
+        <ClaimsSection />
+        <FAQSection />
         <div id="quote" className="bg-gray-50 py-24">
           <div className="max-w-5xl mx-auto px-6">
             <QuoteForm />
@@ -654,6 +880,9 @@ export default function App() {
         </div>
       </main>
       <Footer />
+      <CookieBanner />
+      <FloatingWhatsApp />
+      <BackToTop />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface AnimatedStatProps {
   value: number;
@@ -9,26 +9,44 @@ interface AnimatedStatProps {
 
 export const AnimatedStat: React.FC<AnimatedStatProps> = ({ value, prefix = "", suffix = "", duration = 1500 }) => {
   const [display, setDisplay] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
+  // Trigger only when the stat enters the viewport
   useEffect(() => {
-    let start = 0;
-    const end = value;
-    if (start === end) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started) {
+          setStarted(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [started]);
 
-    const increment = end / (duration / 16); // 16ms per frame roughly
-    
+  // Run the counter once triggered
+  useEffect(() => {
+    if (!started) return;
+    let current = 0;
+    const increment = value / (duration / 16);
     const step = () => {
-      start += increment;
-      if (start >= end) {
-        setDisplay(end);
+      current += increment;
+      if (current >= value) {
+        setDisplay(value);
         return;
       }
-      setDisplay(Math.floor(start));
+      setDisplay(Math.floor(current));
       requestAnimationFrame(step);
     };
-    
     requestAnimationFrame(step);
-  }, [value, duration]);
+  }, [started, value, duration]);
 
-  return <div className="text-3xl font-bold">{prefix}{display}{suffix}</div>;
+  return (
+    <div ref={ref} className="text-3xl font-bold">
+      {prefix}{display}{suffix}
+    </div>
+  );
 };
