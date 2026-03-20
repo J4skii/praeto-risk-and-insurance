@@ -310,7 +310,7 @@ function About() {
                   "We don't just sell policies.<br/>We engineer <span className="text-brand-gold">resilience</span>."
                 </h3>
                 <p className="text-gray-600 mb-10 text-lg leading-relaxed relative z-10 font-light">
-                  Founded in 1998 by Berkeley and Trina Pretorius, Praeto has grown from a family brokerage into a risk management powerhouse.
+                  Founded in 1998 by Berkeley and Keshnee Pretorius, Praeto has grown from a family brokerage into a risk management powerhouse.
                 </p>
                 <div className="flex items-center space-x-6 relative z-10">
                   <div>
@@ -574,10 +574,7 @@ function Footer() {
     <footer className="bg-brand-black text-gray-400 text-sm border-t border-gray-800 relative z-20">
       <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-4 gap-12">
         <div className="col-span-1 md:col-span-1">
-          <div className="flex items-center space-x-2 mb-8">
-            <span className="text-brand-gold text-2xl">
-                <i className="fas fa-shield-alt" aria-hidden="true"></i>
-            </span>
+          <div className="flex items-center mb-8">
             <div className="flex items-center">
               <img src="/praeto-word.png" alt="Praeto" className="w-28 md:w-32 lg:w-36 h-auto object-contain" />
               <span className="sr-only">Praeto</span>
@@ -588,6 +585,7 @@ function Footer() {
              <p className="flex items-center"><i className="fas fa-phone w-6 text-brand-gold"></i> <a href={`tel:${COMPANY_DETAILS.tel.replace(/\s/g,'')}`} className="hover:text-white transition">{COMPANY_DETAILS.tel}</a></p>
              <p className="flex items-center"><i className="fas fa-envelope w-6 text-brand-gold"></i> <a href={`mailto:${COMPANY_DETAILS.email}`} className="hover:text-white transition">{COMPANY_DETAILS.email}</a></p>
           </div>
+          <p className="mt-6 text-[10px] uppercase tracking-[0.2em] text-brand-gold/60 font-medium">Insurance is our business</p>
         </div>
         
         <div>
@@ -614,7 +612,6 @@ function Footer() {
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>FSCA Number</span> <span className="text-gray-300">{COMPANY_DETAILS.fsca}</span></li>
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>CMS Ref</span> <span className="text-gray-300">{COMPANY_DETAILS.cms}</span></li>
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>Reg No</span> <span className="text-gray-300">{COMPANY_DETAILS.regNo.split('/')[1]}...</span></li>
-            <li className="pt-4"><a href="#" className="hover:text-brand-gold transition-colors flex items-center"><i className="fas fa-file-pdf mr-2"></i>Download PAIA Manual</a></li>
           </ul>
         </div>
       </div>
@@ -622,10 +619,6 @@ function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-[10px] uppercase tracking-widest opacity-50">
                 © {new Date().getFullYear()} {COMPANY_DETAILS.tradingName}. All rights reserved.
-            </div>
-            <div className="flex space-x-6 text-lg">
-                <a href="#" className="text-gray-500 hover:text-white transition transform hover:-translate-y-1"><i className="fab fa-linkedin"></i></a>
-                <a href="#" className="text-gray-500 hover:text-white transition transform hover:-translate-y-1"><i className="fab fa-facebook"></i></a>
             </div>
             <a
               href="https://www.linkedin.com/in/jaden-roskruge01/"
