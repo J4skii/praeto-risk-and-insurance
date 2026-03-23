@@ -47,6 +47,63 @@ function WaveDivider({ fill, flip = false }: { fill: string; flip?: boolean }) {
   );
 }
 
+// Topographic contour lines — used on all dark sections
+function TopoBackground() {
+  const peaks = [
+    { cx: 280, cy: 240, rx: 58, ry: 40 },
+    { cx: 1160, cy: 360, rx: 74, ry: 52 },
+    { cx: 740, cy: 530, rx: 50, ry: 36 },
+  ];
+  const rings = [1, 1.7, 2.5, 3.4, 4.5, 5.7, 7.1, 8.7];
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <svg
+        className="absolute inset-0 w-full h-full"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 600"
+        preserveAspectRatio="xMidYMid slice"
+        style={{ opacity: 0.11 }}
+      >
+        {peaks.map((p, pi) =>
+          rings.map((m, ri) => (
+            <ellipse
+              key={`${pi}-${ri}`}
+              cx={p.cx} cy={p.cy}
+              rx={p.rx * m} ry={p.ry * m}
+              fill="none"
+              stroke="#D4AF37"
+              strokeWidth={ri === 0 ? 1.1 : 0.65}
+              opacity={Math.max(0.15, 1 - ri * 0.11)}
+              transform={`rotate(${pi * 12 + ri * 6}, ${p.cx}, ${p.cy})`}
+            />
+          ))
+        )}
+      </svg>
+    </div>
+  );
+}
+
+// Ghost Praeto logo — low-opacity brand watermark on dark sections
+function LogoWatermark({ side = 'right', size = 520 }: { side?: 'right' | 'left'; size?: number }) {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden select-none" aria-hidden="true">
+      <img
+        src="/praeto-logo.png"
+        alt=""
+        draggable={false}
+        className="absolute bottom-0 object-contain"
+        style={{
+          width: size,
+          height: 'auto',
+          opacity: 0.045,
+          [side === 'right' ? 'right' : 'left']: '-4%',
+          bottom: '-6%',
+        }}
+      />
+    </div>
+  );
+}
+
 function Hero() {
   return (
     <section className="relative bg-brand-black text-white overflow-hidden min-h-[75vh] flex items-center">
@@ -61,6 +118,8 @@ function Hero() {
         <div className="absolute inset-0 bg-gradient-to-r from-black via-brand-black/90 to-brand-black/50"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent"></div>
       </div>
+      <TopoBackground />
+      <LogoWatermark side="right" size={680} />
 
       <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center relative z-10 pt-28">
         <FadeIn direction="up">
@@ -379,6 +438,8 @@ function TestimonialsSection() {
   return (
     <section className="py-32 bg-brand-black text-white relative overflow-hidden">
        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-gray-800/40 via-brand-black to-brand-black"></div>
+      <TopoBackground />
+      <LogoWatermark side="right" size={500} />
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <FadeIn>
           <div className="text-center mb-20">
@@ -740,6 +801,8 @@ function ClaimsSection() {
   return (
     <section id="claims" className="py-32 bg-brand-black text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-brand-gold/5 via-transparent to-transparent pointer-events-none"></div>
+      <TopoBackground />
+      <LogoWatermark side="left" size={460} />
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <FadeIn direction="right">
