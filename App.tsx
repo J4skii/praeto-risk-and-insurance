@@ -62,7 +62,7 @@ function TopoBackground() {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1440 600"
         preserveAspectRatio="xMidYMid slice"
-        style={{ opacity: 0.11 }}
+        style={{ opacity: 0.2 }}
       >
         {peaks.map((p, pi) =>
           rings.map((m, ri) => (
@@ -95,7 +95,7 @@ function LogoWatermark({ side = 'right', size = 520 }: { side?: 'right' | 'left'
         style={{
           width: size,
           height: 'auto',
-          opacity: 0.045,
+          opacity: 0.09,
           [side === 'right' ? 'right' : 'left']: '-4%',
           bottom: '-6%',
         }}
