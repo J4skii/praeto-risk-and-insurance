@@ -32,6 +32,21 @@ const getIconForProduct = (name: string) => {
   return 'fa-shield-alt';
 };
 
+function WaveDivider({ fill, flip = false }: { fill: string; flip?: boolean }) {
+  return (
+    <div className="absolute bottom-0 left-0 right-0 pointer-events-none" aria-hidden="true" style={{ lineHeight: 0 }}>
+      <svg
+        viewBox="0 0 1440 56"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        style={{ display: 'block', width: '100%', height: '56px', ...(flip ? { transform: 'scaleX(-1)' } : {}) }}
+      >
+        <path d="M0,28 C360,56 1080,0 1440,28 L1440,56 L0,56 Z" fill={fill} />
+      </svg>
+    </div>
+  );
+}
+
 function Hero() {
   return (
     <section className="relative bg-brand-black text-white overflow-hidden min-h-[75vh] flex items-center">
@@ -112,6 +127,7 @@ function Hero() {
         <span className="text-[10px] uppercase tracking-widest text-white">Scroll</span>
         <div className="w-[1px] h-8 bg-gradient-to-b from-white to-transparent"></div>
       </div>
+      <WaveDivider fill="#D4AF37" />
     </section>
   )
 }
@@ -140,6 +156,7 @@ function StatsSection() {
           ))}
         </div>
       </div>
+      <WaveDivider fill="#FFFFFF" flip={true} />
     </section>
   );
 }
@@ -257,6 +274,9 @@ function SolutionsSection() {
 function QuotingProcess() {
   return (
     <section className="py-32 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 dot-grid opacity-[0.04] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-gold/[0.05] rounded-full blur-3xl animate-drift pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
+      <div className="absolute bottom-10 left-0 w-80 h-80 bg-brand-gold/[0.03] rounded-full blur-3xl animate-drift-reverse pointer-events-none -translate-x-1/3"></div>
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <FadeIn>
           <div className="text-center mb-20">
@@ -301,6 +321,8 @@ function About() {
   return (
     <section id="about" className="py-32 bg-brand-grey relative overflow-hidden">
       <div className="absolute top-0 right-0 -mr-48 -mt-48 w-[600px] h-[600px] bg-brand-gold/5 rounded-full blur-3xl"></div>
+      <div className="absolute inset-0 dot-grid opacity-[0.035] pointer-events-none"></div>
+      <WaveDivider fill="#FFFFFF" flip={true} />
       <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center relative z-10">
         <FadeIn direction="right">
           <div className="relative pl-8 pt-8">
@@ -651,8 +673,11 @@ function AccreditationStrip() {
     { icon: 'fa-landmark', label: 'Est. 1998', sub: '27+ Years of Service' },
   ];
   return (
-    <section className="py-12 bg-brand-grey border-y border-gray-100">
-      <div className="max-w-5xl mx-auto px-6">
+    <section className="py-12 bg-brand-grey border-y border-gray-100 relative overflow-hidden">
+      <div className="absolute inset-0 dot-grid opacity-[0.04] pointer-events-none"></div>
+      <div className="absolute right-0 top-1/2 w-72 h-72 bg-brand-gold/[0.08] rounded-full blur-3xl animate-float pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+      <WaveDivider fill="#FFFFFF" />
+      <div className="max-w-5xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {badges.map((b, i) => (
             <div key={i} className="flex items-center space-x-4 group">
@@ -680,7 +705,11 @@ function WhyBrokerSection() {
   ];
   return (
     <section className="py-32 bg-white relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="absolute inset-0 dot-grid opacity-[0.04] pointer-events-none"></div>
+      <div className="absolute top-1/4 left-0 w-[550px] h-[550px] bg-brand-gold/[0.05] rounded-full blur-3xl animate-drift pointer-events-none -translate-x-1/2"></div>
+      <div className="absolute bottom-0 right-10 w-96 h-96 bg-brand-gold/[0.03] rounded-full blur-3xl animate-drift-reverse pointer-events-none"></div>
+      <WaveDivider fill="#0A0A0A" />
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         <FadeIn>
           <div className="text-center mb-20">
             <span className="text-brand-gold font-bold tracking-[0.2em] text-xs uppercase mb-4 block">The Broker Advantage</span>
@@ -770,6 +799,7 @@ function ClaimsSection() {
           </FadeIn>
         </div>
       </div>
+      <WaveDivider fill="#F8F9FA" flip={true} />
     </section>
   );
 }
@@ -787,8 +817,11 @@ function FAQSection() {
     { q: 'What is POPIA and how does it affect my personal data?', a: 'The Protection of Personal Information Act (POPIA) governs how your personal data is collected and used in South Africa. Praeto processes your information solely to provide insurance quotations and services, and does not share it without your consent.' },
   ];
   return (
-    <section className="py-32 bg-brand-grey">
-      <div className="max-w-3xl mx-auto px-6">
+    <section className="py-32 bg-brand-grey relative overflow-hidden">
+      <div className="absolute inset-0 dot-grid opacity-[0.04] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-brand-gold/[0.07] rounded-full blur-3xl animate-drift pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-10 w-72 h-72 bg-brand-gold/[0.04] rounded-full blur-3xl animate-drift-reverse pointer-events-none"></div>
+      <div className="max-w-3xl mx-auto px-6 relative z-10">
         <FadeIn>
           <div className="text-center mb-16">
             <span className="text-brand-gold font-bold tracking-[0.2em] text-xs uppercase mb-4 block">Got Questions?</span>
