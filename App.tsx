@@ -49,8 +49,7 @@ function WaveDivider({ fill, flip = false }: { fill: string; flip?: boolean }) {
 
 // Enhanced topographic map — organic lines, varying thickness, gentle rotation + pulse
 // Used on Testimonials and Claims sections
-function TopoMapBackground({ uid }: { uid: string }) {
-  const filterId = `topo-f-${uid}`;
+function TopoMapBackground() {
   const peaks = [
     { cx: 180,  cy: 200, rx: 55, ry: 38, dur: '88s',  dir:  1 },
     { cx: 1260, cy: 160, rx: 70, ry: 48, dur: '73s',  dir: -1 },
@@ -71,16 +70,9 @@ function TopoMapBackground({ uid }: { uid: string }) {
         viewBox="0 0 1440 600"
         preserveAspectRatio="xMidYMid slice"
       >
-        <defs>
-          <filter id={filterId} x="-25%" y="-25%" width="150%" height="150%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.013 0.009" numOctaves="4" seed="12" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </defs>
-
         {peaks.map((peak, pi) => (
           <g key={pi}>
-            {/* @ts-ignore — SVG animateTransform, valid SVG but React types incomplete */}
+            {/* @ts-ignore */}
             <animateTransform
               attributeName="transform"
               type="rotate"
@@ -89,19 +81,17 @@ function TopoMapBackground({ uid }: { uid: string }) {
               dur={peak.dur}
               repeatCount="indefinite"
             />
-            <g filter={`url(#${filterId})`}>
-              {spacings.map((m, ri) => (
-                <ellipse
-                  key={ri}
-                  cx={peak.cx} cy={peak.cy}
-                  rx={peak.rx * m} ry={peak.ry * m}
-                  fill="none"
-                  stroke="#D4AF37"
-                  strokeWidth={getStroke(ri)}
-                  opacity={Math.max(0.15, 0.95 - ri * 0.08)}
-                />
-              ))}
-            </g>
+            {spacings.map((m, ri) => (
+              <ellipse
+                key={ri}
+                cx={peak.cx} cy={peak.cy}
+                rx={peak.rx * m} ry={peak.ry * m}
+                fill="none"
+                stroke="#D4AF37"
+                strokeWidth={getStroke(ri)}
+                opacity={Math.max(0.15, 0.95 - ri * 0.08)}
+              />
+            ))}
           </g>
         ))}
       </svg>
@@ -608,7 +598,7 @@ function TestimonialsSection() {
   return (
     <section className="py-32 bg-brand-black text-white relative overflow-hidden">
        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-gray-800/40 via-brand-black to-brand-black"></div>
-      <TopoMapBackground uid="t" />
+      <TopoMapBackground />
       <LogoWatermark side="right" size={500} />
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <FadeIn>
@@ -971,7 +961,7 @@ function ClaimsSection() {
   return (
     <section id="claims" className="py-32 bg-brand-black text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-brand-gold/5 via-transparent to-transparent pointer-events-none"></div>
-      <TopoMapBackground uid="c" />
+      <TopoMapBackground />
       <LogoWatermark side="left" size={460} />
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
