@@ -47,7 +47,69 @@ function WaveDivider({ fill, flip = false }: { fill: string; flip?: boolean }) {
   );
 }
 
-// Topographic contour lines — used on all dark sections
+// Enhanced topographic map — organic lines, varying thickness, gentle rotation + pulse
+// Used on Testimonials and Claims sections
+function TopoMapBackground({ uid }: { uid: string }) {
+  const filterId = `topo-f-${uid}`;
+  const peaks = [
+    { cx: 180,  cy: 200, rx: 55, ry: 38, dur: '88s',  dir:  1 },
+    { cx: 1260, cy: 160, rx: 70, ry: 48, dur: '73s',  dir: -1 },
+    { cx: 860,  cy: 480, rx: 58, ry: 42, dur: '105s', dir:  1 },
+    { cx: 440,  cy: 580, rx: 45, ry: 32, dur: '120s', dir: -1 },
+  ];
+  // Non-linear ring spacing: tighter at centre (steep) → wider at edges (gentle)
+  const spacings = [1, 1.45, 2.0, 2.65, 3.4, 4.25, 5.2, 6.25, 7.4, 8.65];
+  // Stroke widths: thick at centre, hairline at edge; every 5th ring = bold index line
+  const strokeW = [2.0, 1.5, 1.1, 0.8, 0.6, 0.45, 0.35, 0.27, 0.2, 0.15];
+  const getStroke = (ri: number) => (ri % 5 === 0 ? strokeW[ri] * 1.5 : strokeW[ri]) ?? 0.12;
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <svg
+        className="absolute inset-0 w-full h-full topo-pulse"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 1440 600"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <filter id={filterId} x="-25%" y="-25%" width="150%" height="150%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.013 0.009" numOctaves="4" seed="12" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+
+        {peaks.map((peak, pi) => (
+          <g key={pi}>
+            {/* @ts-ignore — SVG animateTransform, valid SVG but React types incomplete */}
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from={`0 ${peak.cx} ${peak.cy}`}
+              to={`${peak.dir * 360} ${peak.cx} ${peak.cy}`}
+              dur={peak.dur}
+              repeatCount="indefinite"
+            />
+            <g filter={`url(#${filterId})`}>
+              {spacings.map((m, ri) => (
+                <ellipse
+                  key={ri}
+                  cx={peak.cx} cy={peak.cy}
+                  rx={peak.rx * m} ry={peak.ry * m}
+                  fill="none"
+                  stroke="#D4AF37"
+                  strokeWidth={getStroke(ri)}
+                  opacity={Math.max(0.15, 0.95 - ri * 0.08)}
+                />
+              ))}
+            </g>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+// Original simple topo — kept for Hero section only
 function TopoBackground() {
   const peaks = [
     { cx: 280, cy: 240, rx: 58, ry: 40 },
@@ -546,7 +608,7 @@ function TestimonialsSection() {
   return (
     <section className="py-32 bg-brand-black text-white relative overflow-hidden">
        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-gray-800/40 via-brand-black to-brand-black"></div>
-      <TopoBackground />
+      <TopoMapBackground uid="t" />
       <LogoWatermark side="right" size={500} />
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <FadeIn>
@@ -909,7 +971,7 @@ function ClaimsSection() {
   return (
     <section id="claims" className="py-32 bg-brand-black text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-brand-gold/5 via-transparent to-transparent pointer-events-none"></div>
-      <TopoBackground />
+      <TopoMapBackground uid="c" />
       <LogoWatermark side="left" size={460} />
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
