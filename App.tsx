@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   COMPANY_DETAILS, 
   STATS, 
@@ -104,6 +104,113 @@ function LogoWatermark({ side = 'right', size = 520 }: { side?: 'right' | 'left'
   );
 }
 
+function HeroParticles() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const GOLD = '#D4AF37';
+    const SOFT_GOLD = '#EDD56A';
+
+    let W = 0, H = 0;
+    const mouse = { x: -9999, y: -9999 };
+    let animId: number;
+
+    interface Pt { x: number; y: number; r: number; vx: number; vy: number; alpha: number; color: string; }
+    interface Rg { x: number; y: number; r: number; vx: number; vy: number; alpha: number; lw: number; }
+
+    let particles: Pt[] = [];
+    let rings: Rg[] = [];
+
+    const mkParticle = (init: boolean): Pt => ({
+      x: Math.random() * W,
+      y: init ? Math.random() * H : H + 10,
+      r: Math.random() * 2.2 + 0.8,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: -(Math.random() * 0.35 + 0.1),
+      alpha: Math.random() * 0.4 + 0.1,
+      color: Math.random() < 0.65 ? GOLD : SOFT_GOLD,
+    });
+
+    const mkRing = (init: boolean): Rg => ({
+      x: Math.random() * W,
+      y: init ? Math.random() * H : H + 30,
+      r: Math.random() * 15 + 5,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: -(Math.random() * 0.2 + 0.04),
+      alpha: Math.random() * 0.13 + 0.03,
+      lw: Math.random() * 0.8 + 0.3,
+    });
+
+    function resize() {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+      particles = Array.from({ length: 55 }, () => mkParticle(true));
+      rings = Array.from({ length: 22 }, () => mkRing(true));
+    }
+
+    function onMouseMove(e: MouseEvent) {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    }
+
+    function onMouseLeave() { mouse.x = -9999; mouse.y = -9999; }
+
+    function tickParticle(p: Pt) {
+      const dx = mouse.x - p.x, dy = mouse.y - p.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 120 && d > 0) { const f = (120 - d) / 120; p.vx -= (dx / d) * f * 0.25; p.vy -= (dy / d) * f * 0.25; }
+      p.vx *= 0.96; p.vy *= 0.96; p.vy -= 0.04;
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -10 || p.x < -20 || p.x > W + 20) Object.assign(p, mkParticle(false));
+    }
+
+    function tickRing(rg: Rg) {
+      const dx = mouse.x - rg.x, dy = mouse.y - rg.y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 140 && d > 0) { const f = (140 - d) / 140; rg.vx -= (dx / d) * f * 0.12; rg.vy -= (dy / d) * f * 0.12; }
+      rg.vx *= 0.97; rg.vy *= 0.97; rg.vy -= 0.018;
+      rg.x += rg.vx; rg.y += rg.vy;
+      if (rg.y < -40 || rg.x < -40 || rg.x > W + 40) Object.assign(rg, mkRing(false));
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+      rings.forEach(rg => {
+        tickRing(rg);
+        ctx.beginPath(); ctx.arc(rg.x, rg.y, rg.r, 0, Math.PI * 2);
+        ctx.strokeStyle = GOLD; ctx.lineWidth = rg.lw; ctx.globalAlpha = rg.alpha; ctx.stroke(); ctx.globalAlpha = 1;
+      });
+      particles.forEach(p => {
+        tickParticle(p);
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha; ctx.fill(); ctx.globalAlpha = 1;
+      });
+      animId = requestAnimationFrame(animate);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseleave', onMouseLeave);
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseleave', onMouseLeave);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />;
+}
+
 function Hero() {
   return (
     <section className="relative bg-brand-black text-white overflow-hidden min-h-[75vh] flex items-center">
@@ -120,6 +227,7 @@ function Hero() {
       </div>
       <TopoBackground />
       <LogoWatermark side="right" size={680} />
+      <HeroParticles />
 
       <div className="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center relative z-10 pt-28">
         <FadeIn direction="up">
