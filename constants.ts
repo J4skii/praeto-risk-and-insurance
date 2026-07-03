@@ -205,4 +205,4 @@ export const TESTIMONIALS: Testimonial[] = [
 
 export const MAIN_CTA = "Get a tailored quote";
 
-export const COMPLIANCE_CLUB_URL = "https://praeto-compliance-club.vercel.app";
+export const COMPLIANCE_CLUB_URL = "https://compliance-club-x7a7.vercel.app";
