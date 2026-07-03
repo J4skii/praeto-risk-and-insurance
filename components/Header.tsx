@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MAIN_CTA } from '../constants';
+import { MAIN_CTA, COMPLIANCE_CLUB_URL } from '../constants';
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -76,6 +76,18 @@ export const Header: React.FC = () => {
           >
             {MAIN_CTA}
           </a>
+          <a 
+            href={COMPLIANCE_CLUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`px-5 py-3 rounded text-xs font-bold uppercase tracking-widest transition-all duration-300 border ${
+              isScrolled
+                ? 'border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-black'
+                : 'border-white/40 text-white hover:bg-white hover:text-brand-black'
+            }`}
+          >
+            Compliance Club
+          </a>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -114,6 +126,15 @@ export const Header: React.FC = () => {
             className="bg-brand-black text-white px-8 py-4 rounded shadow-xl mt-4 text-sm uppercase tracking-widest font-bold"
           >
             {MAIN_CTA}
+          </a>
+          <a 
+            href={COMPLIANCE_CLUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="border border-brand-gold text-brand-gold px-8 py-4 rounded shadow-xl mt-4 text-sm uppercase tracking-widest font-bold"
+          >
+            Compliance Club
           </a>
         </nav>
       </div>

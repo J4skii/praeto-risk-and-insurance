@@ -5,7 +5,8 @@ import {
   PERSONAL_PRODUCTS, 
   BUSINESS_PRODUCTS, 
   TESTIMONIALS, 
-  MAIN_CTA 
+  MAIN_CTA,
+  COMPLIANCE_CLUB_URL
 } from './constants';
 import { Header } from './components/Header';
 import { AnimatedStat } from './components/AnimatedStat';
@@ -310,6 +311,15 @@ function Hero() {
             >
               <i className="fab fa-whatsapp mr-3 text-lg"></i>
               WhatsApp
+            </a>
+            <a
+              href={COMPLIANCE_CLUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center px-10 py-4 rounded border border-brand-gold text-brand-gold text-sm font-bold uppercase tracking-widest hover:bg-brand-gold hover:text-brand-black transition-all duration-300 backdrop-blur-sm"
+            >
+              <i className="fas fa-shield-alt mr-3 text-lg"></i>
+              Compliance Club
             </a>
           </div>
         </FadeIn>
@@ -864,6 +874,16 @@ function Footer() {
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>FSCA Number</span> <span className="text-gray-300">{COMPANY_DETAILS.fsca}</span></li>
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>CMS Ref</span> <span className="text-gray-300">{COMPANY_DETAILS.cms}</span></li>
             <li className="flex justify-between border-b border-gray-800 pb-2"><span>Reg No</span> <span className="text-gray-300">{COMPANY_DETAILS.regNo.split('/')[1]}...</span></li>
+            <li>
+              <a
+                href={COMPLIANCE_CLUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-brand-gold hover:text-white transition-colors mt-2"
+              >
+                Praeto Compliance Club <i className="fas fa-external-link-alt ml-2"></i>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
