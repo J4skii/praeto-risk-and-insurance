@@ -205,4 +205,6 @@ export const TESTIMONIALS: Testimonial[] = [
 
 export const MAIN_CTA = "Get a tailored quote";
 
-export const COMPLIANCE_CLUB_URL = "https://compliance-club-x7a7.vercel.app";
+// Stable Vercel production alias (always tracks the latest Club deploy).
+// NOT the per-deployment "-x7a7" URL, which pins to one build and can 404.
+export const COMPLIANCE_CLUB_URL = "https://compliance-club.vercel.app";
